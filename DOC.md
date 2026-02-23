@@ -1,41 +1,41 @@
-# Dokumentacja techniczna
+# Technical Documentation
 
-## Struktura
-Kod aplikacji znajduje się w katalogu `src/`:
+## Structure
+The application code is located in the `src/` directory:
 
-- `src/agent-edit.js` – główny punkt wejścia CLI i orkiestracja procesu plan/execution.
-- `src/agent-edit-ai.js` – konfiguracja providera AI, definicje narzędzi i wykonawca narzędzi.
-- `src/agent-edit-editor.js` – publiczne API `FileEditor` do operacji na plikach.
-- `src/agent-edit-editor-fnc.js` – niskopoziomowe funkcje I/O, locki, walidacje i bezpieczeństwo ścieżek.
-- `src/agent-edit-helpers.js` – logowanie, kolory, diff i pomocnicze funkcje CLI.
-- `src/load-env.js` – ładowanie zmiennych z pliku `.env`.
+- `src/agent-edit.js` – main CLI entry point and orchestration of the plan/execution process.
+- `src/agent-edit-ai.js` – AI provider configuration, tool definitions, and tool executor.
+- `src/agent-edit-editor.js` – public API `FileEditor` for file operations.
+- `src/agent-edit-editor-fnc.js` – low-level I/O functions, locks, validations, and path security.
+- `src/agent-edit-helpers.js` – logging, colors, diff, and CLI helper functions.
+- `src/load-env.js` – loading variables from the `.env` file.
 
-## Przepływ działania
-1. **Walidacja wejścia**: `agent-edit.js` sprawdza argumenty i dostępność pliku.
-2. **Backup**: tworzony jest plik `*.bak` dla bezpieczeństwa.
-3. **Zebranie zadania**: interfejs `readline` zbiera instrukcje użytkownika.
-4. **Planowanie**: wywołanie `callAPI()` modelem planner z pełnym kontekstem pliku.
-5. **Wykonanie iteracyjne**: model worker używa narzędzi i modyfikuje plik.
-6. **Kontrola jakości**: sprawdzanie składni i podsumowanie statystyk.
+## Workflow
+1. **Input validation**: `agent-edit.js` checks arguments and file availability.
+2. **Backup**: creates a `*.bak` file for safety.
+3. **Task collection**: `readline` interface gathers user instructions.
+4. **Planning**: call `callAPI()` with the planner model using the full file context.
+5. **Iterative execution**: worker model uses tools and modifies the file.
+6. **Quality control**: syntax checking and summary statistics.
 
-## Narzędzia AI (tool calling)
-Zdefiniowane w `src/agent-edit-ai.js`:
+## AI Tools (tool calling)
+Defined in `src/agent-edit-ai.js`:
 - `read_file(path)`
 - `str_replace(path, old_str, new_str)`
 - `advanced_edit(operation, ...)`
 - `bash(command)`
 - `finish()`
 
-`executeTool()` mapuje każde wywołanie narzędzia na operacje `FileEditor` lub polecenie shellowe.
+`executeTool()` maps each tool call to `FileEditor` operations or shell commands.
 
-## Bezpieczeństwo i niezawodność
-- Ochrona przed path traversal przez `resolveSafe()` (root = `process.cwd()`).
-- Atomowy zapis plików przez plik tymczasowy + rename (`atomicWriteRaw`).
-- Locki per plik (`acquireLock`) i limit współbieżności (`withConcurrencyLimit`).
-- Walidacja operacji batch (`validateOperation`).
-- Ograniczenie rozmiaru pliku i regexów (`MAX_FILE_SIZE`, `REGEX_MAX_LENGTH`).
+## Security and Reliability
+- Protection against path traversal via `resolveSafe()` (root = `process.cwd()`).
+- Atomic file writing through temporary file + rename (`atomicWriteRaw`).
+- File-level locks (`acquireLock`) and concurrency limit (`withConcurrencyLimit`).
+- Batch operation validation (`validateOperation`).
+- File size and regex length limits (`MAX_FILE_SIZE`, `REGEX_MAX_LENGTH`).
 
-## Uwagi operacyjne
-- Narzędzie zakłada środowisko Node.js.
-- Weryfikacja składni realizowana jest przez `node --check`.
-- W przypadku błędów można wrócić do kopii zapasowej `*.bak`.
+## Operational Notes
+- The tool assumes a Node.js environment.
+- Syntax verification is performed using `node --check`.
+- In case of errors, it is possible to revert to the `*.bak` backup.
