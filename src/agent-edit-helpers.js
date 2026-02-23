@@ -85,8 +85,8 @@ export const checkSyntax = (filePath) => {
 // ==================== CLI UTILITIES ====================
 export const printUsage = () => {
  console.log(`\n${colors.bold}xdedit-pro${colors.reset} - Advanced AI code editor\n`);
- console.log(`  Usage: node agent-edit.js <file>`);
- console.log(`  Example: node agent-edit.js server.js\n`);
+ console.log(`  Usage: node src/agent-edit.js <file>`);
+ console.log(`  Example: node src/agent-edit.js server.js\n`);
  console.log(`  After launch, paste instructions and type ${colors.cyan}/exec${colors.reset}\n`);
 };
 
