@@ -1,36 +1,36 @@
 # xdAgentEdit-tool
 
-`xdAgentEdit-tool` to CLI do edycji pojedynczego pliku kodu z pomocą modelu AI. Narzędzie działa w dwóch fazach:
-1. **Planowanie** (model planner) – tworzy plan zmian.
-2. **Wykonanie** (model worker/fallback) – wykonuje edycje pliku przez zestaw narzędzi (`read_file`, `str_replace`, `advanced_edit`, `bash`, `finish`).
+`xdAgentEdit-tool` is a CLI tool for editing a single code file with the help of an AI model. The tool operates in two phases:
+1. **Planning** (planner model) – creates a plan for changes.
+2. **Execution** (worker/fallback model) – applies file edits using a set of tools (`read_file`, `str_replace`, `advanced_edit`, `bash`, `finish`).
 
-## Jak to działa
-- Uruchamiasz CLI i wskazujesz plik docelowy.
-- Narzędzie tworzy kopię zapasową `*.bak`.
-- Wklejasz polecenia i kończysz wpisywanie komendą `/exec`.
-- Agent analizuje plik, planuje zmiany i iteracyjnie je stosuje.
-- Na końcu wykonywana jest walidacja składni `node --check`.
+## How it works
+- You launch the CLI and specify the target file.
+- The tool creates a backup `*.bak`.
+- You paste commands and finish input with `/exec`.
+- The agent analyzes the file, plans changes, and applies them iteratively.
+- Syntax validation is performed at the end with `node --check`.
 
-## Konfiguracja
-Konfiguracja odbywa się przez zmienne środowiskowe (plik `.env` w katalogu projektu lub lokalnie przy plikach `src/`):
+## Configuration
+Configuration is done via environment variables (a `.env` file in the project directory or locally near `src/` files):
 
-- `AI_API_KEY` – klucz API
-- `AI_BASE_URL` – host API (bez ścieżki)
-- `EDITOR_PLANNER` – model planujący
-- `EDITOR_WORKER` – model wykonawczy
-- `EDITOR_FALLBACK` – model zapasowy
+- `AI_API_KEY` – API key
+- `AI_BASE_URL` – API host (without path)
+- `EDITOR_PLANNER` – planning model
+- `EDITOR_WORKER` – execution model
+- `EDITOR_FALLBACK` – fallback model
 
-## Użycie
+## Usage
 ```bash
-node src/agent-edit.js <ścieżka-do-pliku>
+node src/agent-edit.js <file-path>
 ```
 
-Przykład:
+Example:
 ```bash
 node src/agent-edit.js server.js
 ```
 
-W trybie interaktywnym:
-- wpisz treść zadania,
-- zakończ przez `/exec` (start),
-- lub `/exit` (anulowanie).
+In interactive mode:
+- enter the task description,
+- finish with `/exec` (start),
+- or `/exit` (cancel).
