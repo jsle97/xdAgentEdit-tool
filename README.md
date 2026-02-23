@@ -229,6 +229,57 @@ paste> /exec
 
 ---
 
+## Shell Setup
+
+**Option A — symlink (recommended)**
+
+```bash
+chmod +x src/agent-edit.js
+sudo ln -s "$(pwd)/src/agent-edit.js" /usr/local/bin/xde
+```
+
+Now you can edit any file with:
+```bash
+xde server.js
+xde src/utils/parser.js
+```
+
+**Option B — shell function with backup info**
+
+Add to `~/.bashrc` or `~/.zshrc`:
+```bash
+xde() {
+ local XDE_DIR="$HOME/tools/xdAgentEdit-tool"
+ if [ $# -eq 0 ]; then
+  echo "Usage: xde <file-path>"
+  return 1
+ fi
+ if [ ! -f "$1" ]; then
+  echo "File not found: $1"
+  return 1
+ fi
+ echo "Backup: $1.bak"
+ node "$XDE_DIR/src/agent-edit.js" "$1"
+}
+```
+
+Then `source ~/.bashrc` and use as `xde server.js`.
+
+**Option C — with model override**
+
+```bash
+xde() {
+ local XDE_DIR="$HOME/tools/xdAgentEdit-tool"
+ EDITOR_PLANNER="${2:-$EDITOR_PLANNER}" \
+ EDITOR_WORKER="${2:-$EDITOR_WORKER}" \
+ node "$XDE_DIR/src/agent-edit.js" "$1"
+}
+```
+
+Override model on the fly: `xde handler.js Qwen/Qwen3-235B-A22B`.
+
+---
+
 ## Limitations
 
 - Currently targets single-file editing (one file per session)
